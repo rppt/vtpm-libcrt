@@ -2,6 +2,14 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+static inline unsigned long long __rdtsc(void)
+{
+	DECLARE_ARGS(val, low, high);
+
+	asm volatile("rdtsc" : EAX_EDX_RET(val, low, high));
+
+	return EAX_EDX_VAL(val, low, high);
+}
 
 clock_t clock(void) {
 	//printf("%s, reached dummy stub\n", __func__);
