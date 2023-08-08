@@ -339,18 +339,6 @@ isalnum (
           (('A' <= (c)) && ((c) <= 'Z')));
 }
 
-/* Determines if a particular character is in upper case */
-int
-isupper (
-  int  c
-  )
-{
-  //
-  // <uppercase letter> := [A-Z]
-  //
-  return (('A' <= (c)) && ((c) <= 'Z'));
-}
-
 //
 // -- Data Conversion Routines --
 //
@@ -383,19 +371,6 @@ strtoul (
   // no direct functionality logic dependency in present UEFI cases.
   //
   return 0;
-}
-
-/* Convert character to lowercase */
-int
-tolower (
-  int  c
-  )
-{
-  if (('A' <= (c)) && ((c) <= 'Z')) {
-    return (c - ('A' - 'a'));
-  }
-
-  return (c);
 }
 
 //
