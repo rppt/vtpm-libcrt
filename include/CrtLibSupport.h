@@ -50,10 +50,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #define NULL  ((VOID *) 0)
 #endif
 
-#define OPENSSLDIR  ""
-#define ENGINESDIR  ""
-#define MODULESDIR  ""
-
+#define SIZE_MAX	(~0UL)
 #define MAX_STRING_SIZE  0x1000
 
 //
@@ -233,8 +230,16 @@ struct sockaddr {
 
 #define __NEED_pid_t
 
+#define __NEED_ino_t
+#define __NEED_dev_t
+#define __NEED_nlink_t
+#define __NEED_mode_t
+#define __NEED_blksize_t
+#define __NEED_blkcnt_t
+
 #define _Addr long
 #define _Int64 long
+#define _Reg long
 
 #if defined(__NEED_int8_t) && !defined(__DEFINED_int8_t)
 typedef signed char     int8_t;
@@ -319,6 +324,36 @@ typedef int pid_t;
 #if defined(__NEED_struct_timespec) && !defined(__DEFINED_struct_timespec)
 struct timespec { time_t tv_sec; int :8*(sizeof(time_t)-sizeof(long))*(__BYTE_ORDER==4321); long tv_nsec; int :8*(sizeof(time_t)-sizeof(long))*(__BYTE_ORDER!=4321); };
 #define __DEFINED_struct_timespec
+#endif
+
+#if defined(__NEED_ino_t) && !defined(__DEFINED_ino_t)
+typedef unsigned _Int64 ino_t;
+#define __DEFINED_ino_t
+#endif
+
+#if defined(__NEED_dev_t) && !defined(__DEFINED_dev_t)
+typedef unsigned _Int64 dev_t;
+#define __DEFINED_dev_t
+#endif
+
+#if defined(__NEED_nlink_t) && !defined(__DEFINED_nlink_t)
+typedef unsigned _Reg nlink_t;
+#define __DEFINED_nlink_t
+#endif
+
+#if defined(__NEED_mode_t) && !defined(__DEFINED_mode_t)
+typedef unsigned mode_t;
+#define __DEFINED_mode_t
+#endif
+
+#if defined(__NEED_blksize_t) && !defined(__DEFINED_blksize_t)
+typedef long blksize_t;
+#define __DEFINED_blksize_t
+#endif
+
+#if defined(__NEED_blkcnt_t) && !defined(__DEFINED_blkcnt_t)
+typedef _Int64 blkcnt_t;
+#define __DEFINED_blkcnt_t
 #endif
 
 #define STDERR_FILENO 2
@@ -406,6 +441,12 @@ typedef struct __jmp_buf_tag {
 //
 extern int   errno;
 extern FILE  *stderr;
+extern int errno;
+
+#define ENOMEM        12
+#define EINVAL        22
+#define EAFNOSUPPORT  47
+#define EOVERFLOW     75
 
 //
 // Function prototypes of CRT Library routines
@@ -745,6 +786,52 @@ time_t mktime(struct tm *tm);
 char *ctime(const time_t *t);
 
 int isascii(int c);
+
+// dirent.h
+typedef struct __dirstream DIR;
+
+struct dirent {
+    ino_t d_ino;
+    off_t d_off;
+    unsigned short d_reclen;
+    unsigned char d_type;
+    char d_name[256];
+};
+
+DIR *opendir(const char *name);
+int closedir(DIR *name);
+struct dirent *readdir(DIR *name);
+
+// sys/stat.h
+
+#define S_IFDIR 0040000
+#define S_IFMT  0170000
+
+#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+
+/* copied from kernel definition, but with padding replaced
+ * by the corresponding correctly-sized userspace types. */
+struct stat {
+    dev_t st_dev;
+    ino_t st_ino;
+    nlink_t st_nlink;
+
+    mode_t st_mode;
+    uid_t st_uid;
+    gid_t st_gid;
+    unsigned int    __pad0;
+    dev_t st_rdev;
+    off_t st_size;
+    blksize_t st_blksize;
+    blkcnt_t st_blocks;
+
+    struct timespec st_atim;
+    struct timespec st_mtim;
+    struct timespec st_ctim;
+    long __unused[3];
+};
+
+int stat(const char *__restrict path, struct stat *restrict buf);
 
 #define OFFSET_OF(TYPE, Field)  ((UINTN) __builtin_offsetof(TYPE, Field))
 #define offsetof(type, member)  OFFSET_OF(type,member)
