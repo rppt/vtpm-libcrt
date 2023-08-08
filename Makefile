@@ -62,6 +62,7 @@ OBJS := $(addprefix src/, \
 				__errno_location.o \
 				ctime.o \
 				malloc.o \
+				stub.o \
 				qsort.o \
 				)
 

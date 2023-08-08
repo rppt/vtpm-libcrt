@@ -176,6 +176,7 @@ typedef CHAR16  wchar_t;
 // so FILE is mapped to VOID * to pass build
 //
 typedef VOID *FILE;
+#define EOF (-1)
 
 //
 // Structures Definitions
