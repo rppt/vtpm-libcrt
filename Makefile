@@ -72,7 +72,8 @@ install: all
 	cp libcrt.a $(PREFIX)
 
 libcrt.a: $(OBJS)
-	ar rcs $@ $(OBJS)
+	rm -f $@
+	ar cDPrST $@ $(OBJS)
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
