@@ -47,10 +47,12 @@ OBJS := $(addprefix src/, \
 				__secs_to_tm.o \
 				fprintf.o \
 				fputc.o \
+				fputs.o \
 				longjmp.o \
 				net.o \
 				file.o \
 				atexit.o \
+				exit.o \
 				tolower.o \
 				toupper.o \
 				islower.o \
