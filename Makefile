@@ -61,6 +61,7 @@ OBJS := $(addprefix src/, \
 				mktime.o \
 				__errno_location.o \
 				ctime.o \
+				malloc.o \
 				)
 
 all: libcrt.a
